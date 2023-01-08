@@ -28,7 +28,9 @@ Given('que no ha iniciat sessió amb cap usuari', async() => {
 
 Given('el mapa està centrat en la regió Espanya', async() => {
   await driver.get("https://www.waze.com/ca/live-map/directions?latlng=39.44871624877421%2C-5.799222886562347");
+  // Aquest enllaç situa el mapa en regió Espanya
   const inputDesti = await driver.findElement(By.css('div.is-origin input.wm-search__input'));
+  // però té el problema que estableix un destí... cal esperar que aparegui un missatge i esborrar el destí.
   await driver.sleep(2000);
   await inputDesti.clear();
 });
@@ -48,6 +50,7 @@ Then('es desplega un llista d\'opcions que conté {string}', async(resultat) => 
   let i = 0;
   const len = allResults.length;
   while(i<len && !found) { 
+    // No ha funcionat el mètode getAttribute("data-value") per parsejar tota la informació de l'opció
     const value = await allResults[i].getText();
     found = value === resultat;
     i++;

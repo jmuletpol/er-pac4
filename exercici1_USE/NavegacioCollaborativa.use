@@ -1,0 +1,101 @@
+model NavegacionColaborativa
+
+class User 
+attributes
+	username:String
+	password:String
+	rank:Integer
+end
+
+class Route
+attributes
+	startTime:Integer
+	endTime:Integer
+	expectDelays:Boolean derive = origin.nearEvents->notEmpty() or self.step->exists(s|s.location.nearEvents->notEmpty())
+	totalDistance:Integer derive = self.step->collect(s|s.distanceFromPreviousStep)->sum()
+	totalTime:Integer derive = self.step->collect(s| s.timeFromPreviousStep)->sum()
+end
+
+class Step
+attributes
+	distanceFromPreviousStep:Integer
+	timeFromPreviousStep:Integer
+end
+
+
+class Place
+attributes
+	name:String
+	longitude:Real
+	latitude:Real
+	popular:Boolean derive = User.allInstances()->select(u|u.favorite->includes(self))->size() >=2 
+end
+
+class Event
+attributes
+	startTime:Integer
+	endTime:Integer
+	description:String
+end
+
+composition routes between
+  User [1] role user
+  Route [*] role route
+end
+
+composition steps between
+  Route [1] role route
+  Step [*] role step ordered
+end
+
+composition blocked_users between
+   User [1] role user
+   User [*] role blocks
+end
+
+composition favorites between
+  User [*] role userFavorited
+  Place [*] role favorite
+end
+
+composition historic between
+  User [*] role userVisited
+  Place [*] role visitedPlace
+end  
+
+composition route_origin between
+  Route [*] role routeOrigin 
+  Place [1] role origin
+end
+
+composition route_destination between
+  Route [*] role routeDestination
+  Place [1] role destination 
+end
+
+composition step_location between
+  Step [*] role step 
+  Place [1] role location
+end
+
+
+composition near_events between
+  Place [1] role place
+  Event [*] role nearEvents
+end
+
+composition event_creator between
+  Event [*] role events
+  User  [1] role createdBy
+end
+
+
+constraints
+
+-- Afegit l'invariant
+context Route inv checkRouteDestination:
+	self.destination = self.step -> last().location
+
+
+
+
