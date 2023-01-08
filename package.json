@@ -4,7 +4,7 @@
   "description": "V&V amb Cucumber.js + Selenium webdriver",
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/.bin/cucumber-js"
+    "test": "./node_modules/@cucumber/cucumber/bin/cucumber-js"
   },
   "repository": {
     "type": "git",
@@ -22,9 +22,9 @@
   },
   "homepage": "https://github.com/jmuletpol/er-pac4#readme",
   "dependencies": {
+    "@cucumber/cucumber": "^8.10.0",
     "assert": "^2.0.0",
     "chromedriver": "^108.0.0",
-    "cucumber": "^6.0.7",
     "selenium-webdriver": "^4.7.1"
   }
 }
